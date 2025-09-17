@@ -16,6 +16,28 @@ format:
 
 In cancer bioinformatics and clinical research, accurately identifying patients with breast cancer diagnoses and related procedures from electronic health records requires robust use of SNOMED CT coding. This facilitates cohort selection, outcome tracking, and integration of clinical data across coding systems like ICD-10.
 
+In clinical data management and research, accurately coding diagnoses and treatments is vital. SNOMED CT offers precise standardized codes for disease classification and therapeutic interventions.
+
+Women with [hormone receptor (estrogen receptor, ER) positive breast cancer]{.underline} commonly receive endocrine therapy using drugs such as [tamoxifen]{.underline} or [aromatase inhibitors]{.underline} (AIs) as part of their treatment. However these treatments are generally given to different groups of women;
+
+-   Tamoxifen is a selective estrogen receptor modulator (SERM) primarily used in [pre-menopausal women]{.underline}, and occasionally indicated for post-menopausal women; it works by blocking ER on cancer cells, stopping estrogen-driven growth.
+
+-   Aromatase inhibitors (AI, e.g., anastrozole, letrozole, exemestane) prevent estrogen production by inhibiting the aromatase enzyme and are mostly used in [post-menopausal]{.underline} women.
+
+-   Tamoxifen remains the standard adjuvant therapy for pre-menopausal women, while AIs are preferred for post-menopausal women due to better efficacy.
+
+-   Menopausal status is often approximated using age 55 as a surrogate marker in clinical and research settings.
+
+**SNOMED CT Codes for Endocrine Therapy**
+
+| **Description** | **SNOMED CT Code** | **Notes** |
+|:---|:---|:---|
+| **Tamoxifen therapy (procedure)** | 724161009 | Therapeutic use of tamoxifen |
+| **Aromatase inhibitor therapy** | 386662006 | Aromatase inhibitor treatment |
+| **Endocrine therapy (general)** | 407543004 | General endocrine therapy for breast cancer |
+| **Estrogen receptor positive tumor (disorder)** | 416053008 | Hormone positive breast cancer marker |
+| **Malignant tumor of breast** | 254837009 | Breast cancer diagnosis |
+
 ## Objectives
 
 -   Load SNOMED CT dictionaries for analysis
@@ -45,7 +67,7 @@ library(data.table)
 
 To query SNOMED, you need a copy of the dictionary
 
-Information about SNOMED CT Irish Edition releases and contact details (snomed@hse.ie) for licensing and downloads
+Information about SNOMED CT Irish Edition releases and contact details (snomed\@hse.ie) for licensing and downloads
 
 [www.ehealthireland.ie](https://www.ehealthireland.ie/technology-and-transformation-functions/chief-data-and-analytics-office-cdao/standards-and-terminologies/snomed-ct/)
 
@@ -72,11 +94,12 @@ saveRDS(SNOMED, file = 'mySNOMED.RDS')
 # Reload the 'SNOMED' environment from file
 SNOMED <- readRDS('mySNOMED.RDS')
 ```
+
 ## Tasks
 
 ### 1. Identify Breast Cancer Concepts in SNOMED CT
 
-Search for SNOMED CT concepts matching.  I am just using the sample SNOMED library here.  This is miminal and only includes heart info
+Search for SNOMED CT concepts matching. I am just using the sample SNOMED library here. This is miminal and only includes heart info
 
 ```{r}
 SNOMED<- sampleSNOMED()
@@ -103,7 +126,6 @@ print(bc_codelist)
 
 Map the breast cancer SNOMED codes to ICD-10 codes to enable cross-system use
 
-
 ```{r}
 bc_icd10_map <- getMaps(bc_codelist, to='icd10', SNOMED=SNOMED)
 print(bc_icd10_map)
@@ -118,18 +140,22 @@ bc_icd10_codes <- data.table(code = unique(bc_icd10_map$code), term = unique(bc_
 print(bc_icd10_codes)
 ```
 
-### 5.  Question
+# 5. Question
 
-Find codes for ESR1 hormone positve breast cancer  that would be eligible for hormone therapy (eg Tamoxifen or Aromatase Inhibitors). Women are prescribed these if they are pre or post menopause (surragate is age 55). Find codes releated to these queries.
+Find SNOMED-CT codes required for a research study that will explore hormone positve breast cancer and the number of patient eligible for hormone therapy (eg Tamoxifen or Aromatase Inhibitors).
 
-
-Why is precise terminology mapping crucial when defining cancer cohorts?
-
-What challenges might arise from incomplete or ambiguous mappings?
+**Tip**: In addition to Rdiagnosislist, may need to explore other R packages for SNOMED-CT eg snomedizer (R interface to the SNOMED CT Terminology Server REST API) or https://github.com/ropensci/trud. (Inferface to NHS TRUD API to programmatically download SNOMED and other NHS reference data directly from the server.) or others you find
 
 ## Deliverables
 
 -   Submit your completed R script implementing all code steps with comments.
-- In addition to Rdiagnosislist,  may need to explore other R packages for SNOMED-CT eg snomedizer (R interface to the SNOMED CT Terminology Server REST API) or https://github.com/ropensci/trud. (Inferface to NHS TRUD API to programmatically download SNOMED and other NHS reference data directly from the server.) or others you find
 
 -   Provide the data table containing breast cancer-related ICD-10 codes and descriptions derived from SNOMED CT mappings.
+
+### Reflection 
+
+Please consider (we can discuss this in class)
+
+-   Why is precise terminology mapping crucial when defining cancer cohorts?
+
+-   What challenges might arise from incomplete or ambiguous mappings?

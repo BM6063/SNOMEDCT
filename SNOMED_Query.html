@@ -95,9 +95,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#create-a-snomed-ct-codelist-including-descendant-concepts" id="toc-create-a-snomed-ct-codelist-including-descendant-concepts" class="nav-link" data-scroll-target="#create-a-snomed-ct-codelist-including-descendant-concepts"><span class="header-section-number">1.5.2</span> 2. Create a SNOMED CT Codelist Including Descendant Concepts</a></li>
   <li><a href="#map-breast-cancer-snomed-codes-to-icd-10" id="toc-map-breast-cancer-snomed-codes-to-icd-10" class="nav-link" data-scroll-target="#map-breast-cancer-snomed-codes-to-icd-10"><span class="header-section-number">1.5.3</span> 3. Map Breast Cancer SNOMED Codes to ICD-10</a></li>
   <li><a href="#extract-unique-icd-10-codes-and-labels" id="toc-extract-unique-icd-10-codes-and-labels" class="nav-link" data-scroll-target="#extract-unique-icd-10-codes-and-labels"><span class="header-section-number">1.5.4</span> 4. Extract Unique ICD-10 Codes and Labels</a></li>
-  <li><a href="#question" id="toc-question" class="nav-link" data-scroll-target="#question"><span class="header-section-number">1.5.5</span> 5. Question</a></li>
   </ul></li>
-  <li><a href="#deliverables" id="toc-deliverables" class="nav-link" data-scroll-target="#deliverables"><span class="header-section-number">1.6</span> Deliverables</a></li>
+  </ul></li>
+  <li><a href="#question" id="toc-question" class="nav-link" data-scroll-target="#question"><span class="header-section-number">2</span> 5. Question</a>
+  <ul class="collapse">
+  <li><a href="#deliverables" id="toc-deliverables" class="nav-link" data-scroll-target="#deliverables"><span class="header-section-number">2.1</span> Deliverables</a>
+  <ul class="collapse">
+  <li><a href="#reflection" id="toc-reflection" class="nav-link" data-scroll-target="#reflection"><span class="header-section-number">2.1.1</span> Reflection</a></li>
+  </ul></li>
   </ul></li>
   </ul>
 </nav>
@@ -140,6 +145,56 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="real-world-context" class="level2" data-number="1.1">
 <h2 data-number="1.1" class="anchored" data-anchor-id="real-world-context"><span class="header-section-number">1.1</span> Real-World Context</h2>
 <p>In cancer bioinformatics and clinical research, accurately identifying patients with breast cancer diagnoses and related procedures from electronic health records requires robust use of SNOMED CT coding. This facilitates cohort selection, outcome tracking, and integration of clinical data across coding systems like ICD-10.</p>
+<p>In clinical data management and research, accurately coding diagnoses and treatments is vital. SNOMED CT offers precise standardized codes for disease classification and therapeutic interventions.</p>
+<p>Women with <u>hormone receptor (estrogen receptor, ER) positive breast cancer</u> commonly receive endocrine therapy using drugs such as <u>tamoxifen</u> or <u>aromatase inhibitors</u> (AIs) as part of their treatment. However these treatments are generally given to different groups of women;</p>
+<ul>
+<li><p>Tamoxifen is a selective estrogen receptor modulator (SERM) primarily used in <u>pre-menopausal women</u>, and occasionally indicated for post-menopausal women; it works by blocking ER on cancer cells, stopping estrogen-driven growth.</p></li>
+<li><p>Aromatase inhibitors (AI, e.g., anastrozole, letrozole, exemestane) prevent estrogen production by inhibiting the aromatase enzyme and are mostly used in <u>post-menopausal</u> women.</p></li>
+<li><p>Tamoxifen remains the standard adjuvant therapy for pre-menopausal women, while AIs are preferred for post-menopausal women due to better efficacy.</p></li>
+<li><p>Menopausal status is often approximated using age 55 as a surrogate marker in clinical and research settings.</p></li>
+</ul>
+<p><strong>SNOMED CT Codes for Endocrine Therapy</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"><strong>Description</strong></th>
+<th style="text-align: left;"><strong>SNOMED CT Code</strong></th>
+<th style="text-align: left;"><strong>Notes</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Tamoxifen therapy (procedure)</strong></td>
+<td style="text-align: left;">724161009</td>
+<td style="text-align: left;">Therapeutic use of tamoxifen</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Aromatase inhibitor therapy</strong></td>
+<td style="text-align: left;">386662006</td>
+<td style="text-align: left;">Aromatase inhibitor treatment</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Endocrine therapy (general)</strong></td>
+<td style="text-align: left;">407543004</td>
+<td style="text-align: left;">General endocrine therapy for breast cancer</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Estrogen receptor positive tumor (disorder)</strong></td>
+<td style="text-align: left;">416053008</td>
+<td style="text-align: left;">Hormone positive breast cancer marker</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Malignant tumor of breast</strong></td>
+<td style="text-align: left;">254837009</td>
+<td style="text-align: left;">Breast cancer diagnosis</td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="objectives" class="level2" data-number="1.2">
 <h2 data-number="1.2" class="anchored" data-anchor-id="objectives"><span class="header-section-number">1.2</span> Objectives</h2>
@@ -237,7 +292,7 @@ codelist_name:
 version: 
 author: 
 date: 
-timestamp: 2025-09-17 08:03:58.045997
+timestamp: 2025-09-17 09:32:14.977515
 sct_version: Sample
 format: simple 
 Key: &lt;conceptId&gt;
@@ -269,7 +324,7 @@ codelist_name:
 version: 
 author: 
 date: 
-timestamp: 2025-09-17 08:03:58.045997
+timestamp: 2025-09-17 09:32:14.977515
 sct_version: Sample
 format: simple 
 Key: &lt;conceptId&gt;
@@ -312,20 +367,26 @@ Key: &lt;conceptId&gt;
 </div>
 </div>
 </section>
-<section id="question" class="level3" data-number="1.5.5">
-<h3 data-number="1.5.5" class="anchored" data-anchor-id="question"><span class="header-section-number">1.5.5</span> 5. Question</h3>
-<p>Find codes for ESR1 hormone positve breast cancer that would be eligible for hormone therapy (eg Tamoxifen or Aromatase Inhibitors). Women are prescribed these if they are pre or post menopause (surragate is age 55). Find codes releated to these queries.</p>
-<p>Why is precise terminology mapping crucial when defining cancer cohorts?</p>
-<p>What challenges might arise from incomplete or ambiguous mappings?</p>
 </section>
 </section>
-<section id="deliverables" class="level2" data-number="1.6">
-<h2 data-number="1.6" class="anchored" data-anchor-id="deliverables"><span class="header-section-number">1.6</span> Deliverables</h2>
+<section id="question" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> 5. Question</h1>
+<p>Find SNOMED-CT codes required for a research study that will explore hormone positve breast cancer and the number of patient eligible for hormone therapy (eg Tamoxifen or Aromatase Inhibitors).</p>
+<p><strong>Tip</strong>: In addition to Rdiagnosislist, may need to explore other R packages for SNOMED-CT eg snomedizer (R interface to the SNOMED CT Terminology Server REST API) or https://github.com/ropensci/trud. (Inferface to NHS TRUD API to programmatically download SNOMED and other NHS reference data directly from the server.) or others you find</p>
+<section id="deliverables" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="deliverables"><span class="header-section-number">2.1</span> Deliverables</h2>
 <ul>
 <li><p>Submit your completed R script implementing all code steps with comments.</p></li>
-<li><p>In addition to Rdiagnosislist, may need to explore other R packages for SNOMED-CT eg snomedizer (R interface to the SNOMED CT Terminology Server REST API) or https://github.com/ropensci/trud. (Inferface to NHS TRUD API to programmatically download SNOMED and other NHS reference data directly from the server.) or others you find</p></li>
 <li><p>Provide the data table containing breast cancer-related ICD-10 codes and descriptions derived from SNOMED CT mappings.</p></li>
 </ul>
+<section id="reflection" class="level3" data-number="2.1.1">
+<h3 data-number="2.1.1" class="anchored" data-anchor-id="reflection"><span class="header-section-number">2.1.1</span> Reflection</h3>
+<p>Please consider (we can discuss this in class)</p>
+<ul>
+<li><p>Why is precise terminology mapping crucial when defining cancer cohorts?</p></li>
+<li><p>What challenges might arise from incomplete or ambiguous mappings?</p></li>
+</ul>
+</section>
 </section>
 </section>
 
