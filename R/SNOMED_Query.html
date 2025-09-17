@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Aedin">
+<meta name="dcterms.date" content="2025-09-17">
+
+<title>SNOMED CT Exercise: Breast Cancer Coding with Rdiagnosislist</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="SNOMED_Query_files/libs/clipboard/clipboard.min.js"></script>
+<script src="SNOMED_Query_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="SNOMED_Query_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="SNOMED_Query_files/libs/quarto-html/popper.min.js"></script>
+<script src="SNOMED_Query_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="SNOMED_Query_files/libs/quarto-html/anchor.min.js"></script>
+<link href="SNOMED_Query_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="SNOMED_Query_files/libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="SNOMED_Query_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="SNOMED_Query_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="SNOMED_Query_files/libs/bootstrap/bootstrap-8a894fcc3cb5e37eb5bf30def131be2f.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#exercise-exploring-snomed-ct-for-breast-cancer-research-using-rdiagnosislist" id="toc-exercise-exploring-snomed-ct-for-breast-cancer-research-using-rdiagnosislist" class="nav-link active" data-scroll-target="#exercise-exploring-snomed-ct-for-breast-cancer-research-using-rdiagnosislist"><span class="header-section-number">1</span> Exercise: Exploring SNOMED CT for Breast Cancer Research Using Rdiagnosislist</a>
+  <ul class="collapse">
+  <li><a href="#real-world-context" id="toc-real-world-context" class="nav-link" data-scroll-target="#real-world-context"><span class="header-section-number">1.1</span> Real-World Context</a></li>
+  <li><a href="#objectives" id="toc-objectives" class="nav-link" data-scroll-target="#objectives"><span class="header-section-number">1.2</span> Objectives</a></li>
+  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup"><span class="header-section-number">1.3</span> Setup</a></li>
+  <li><a href="#load-sample-snomed-ct-dictionary-environment" id="toc-load-sample-snomed-ct-dictionary-environment" class="nav-link" data-scroll-target="#load-sample-snomed-ct-dictionary-environment"><span class="header-section-number">1.4</span> Load (sample) SNOMED CT dictionary environment</a></li>
+  <li><a href="#example-code" id="toc-example-code" class="nav-link" data-scroll-target="#example-code"><span class="header-section-number">1.5</span> Example Code</a>
+  <ul class="collapse">
+  <li><a href="#identify-breast-cancer-concepts-in-snomed-ct" id="toc-identify-breast-cancer-concepts-in-snomed-ct" class="nav-link" data-scroll-target="#identify-breast-cancer-concepts-in-snomed-ct"><span class="header-section-number">1.5.1</span> 1. Identify Breast Cancer Concepts in SNOMED CT</a></li>
+  <li><a href="#create-a-snomed-ct-codelist-including-descendant-concepts" id="toc-create-a-snomed-ct-codelist-including-descendant-concepts" class="nav-link" data-scroll-target="#create-a-snomed-ct-codelist-including-descendant-concepts"><span class="header-section-number">1.5.2</span> 2. Create a SNOMED CT Codelist Including Descendant Concepts</a></li>
+  <li><a href="#map-breast-cancer-snomed-codes-to-icd-10" id="toc-map-breast-cancer-snomed-codes-to-icd-10" class="nav-link" data-scroll-target="#map-breast-cancer-snomed-codes-to-icd-10"><span class="header-section-number">1.5.3</span> 3. Map Breast Cancer SNOMED Codes to ICD-10</a></li>
+  <li><a href="#extract-unique-icd-10-codes-and-labels" id="toc-extract-unique-icd-10-codes-and-labels" class="nav-link" data-scroll-target="#extract-unique-icd-10-codes-and-labels"><span class="header-section-number">1.5.4</span> 4. Extract Unique ICD-10 Codes and Labels</a></li>
+  </ul></li>
+  <li><a href="#question" id="toc-question" class="nav-link" data-scroll-target="#question"><span class="header-section-number">1.6</span> Question</a></li>
+  <li><a href="#deliverables" id="toc-deliverables" class="nav-link" data-scroll-target="#deliverables"><span class="header-section-number">1.7</span> Deliverables</a></li>
+  <li><a href="#reflection" id="toc-reflection" class="nav-link" data-scroll-target="#reflection"><span class="header-section-number">1.8</span> Reflection</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">SNOMED CT Exercise: Breast Cancer Coding with Rdiagnosislist</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Aedin </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 17, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="exercise-exploring-snomed-ct-for-breast-cancer-research-using-rdiagnosislist" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Exercise: Exploring SNOMED CT for Breast Cancer Research Using Rdiagnosislist</h1>
+<section id="real-world-context" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="real-world-context"><span class="header-section-number">1.1</span> Real-World Context</h2>
+<p>In cancer bioinformatics and clinical research, accurately identifying patients with breast cancer diagnoses and related procedures from electronic health records requires robust use of SNOMED CT coding. This facilitates cohort selection, outcome tracking, and integration of clinical data across coding systems like ICD-10.</p>
+</section>
+<section id="objectives" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="objectives"><span class="header-section-number">1.2</span> Objectives</h2>
+<ul>
+<li>Load SNOMED CT dictionaries for analysis</li>
+<li>Search for breast cancer-related clinical concepts</li>
+<li>Generate a comprehensive SNOMED CT codelist including subtypes and related clinical findings</li>
+<li>Map SNOMED CT breast cancer codes to ICD-10 codes for interoperability</li>
+<li>Summarize and inspect the final coding list for use in research cohorts</li>
+</ul>
+</section>
+<section id="setup" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="setup"><span class="header-section-number">1.3</span> Setup</h2>
+<p>Install and load package</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">"Rdiagnosislist"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>{ </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">install.packages</span>(<span class="st">"Rdiagnosislist"</span>) </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>   <span class="fu">install.packages</span>(<span class="st">"data.table"</span>) </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  } </span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Rdiagnosislist) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: readxl</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'Rdiagnosislist'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:stats':
+
+    decompose</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    intersect, setdiff, union</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="load-sample-snomed-ct-dictionary-environment" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="load-sample-snomed-ct-dictionary-environment"><span class="header-section-number">1.4</span> Load (sample) SNOMED CT dictionary environment</h2>
+<p>To query SNOMED, you need a copy of the dictionary</p>
+<p>Information about SNOMED CT Irish Edition releases and contact details (snomed@hse.ie) for licensing and downloads</p>
+<p><a href="https://www.ehealthireland.ie/technology-and-transformation-functions/chief-data-and-analytics-office-cdao/standards-and-terminologies/snomed-ct/">www.ehealthireland.ie</a></p>
+<p>Other <a href="https://static-web.snomedtools.org/html/migrate.html">SNOMED-Help</a></p>
+<p><a href="https://isd.digital.nhs.uk/trud/user/guest/group/0/home">NHS Files</a></p>
+<p><a href="https://isd.digital.nhs.uk/trud/users/authenticated/filters/0/categories/26/items/101/releases">NHS link -after registering</a></p>
+<p>You may need to register.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load UK and International SNOMED CT release files into R</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Load UK and International SNOMED CT release files into an</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># R environment called 'SNOMED'</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>SNOMED <span class="ot">&lt;-</span> <span class="fu">loadSNOMED</span>(<span class="fu">c</span>(</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">'SnomedCT_InternationalRF2_PRODUCTION_20200731T120000Z/'</span>,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">'SnomedCT_UKClinicalRF2_PRODUCTION_20210317T000001Z/'</span>))</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Save the 'SNOMED' environment to a file on disk</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(SNOMED, <span class="at">file =</span> <span class="st">'mySNOMED.RDS'</span>)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Reload the 'SNOMED' environment from file</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>SNOMED <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">'mySNOMED.RDS'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="example-code" class="level2" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="example-code"><span class="header-section-number">1.5</span> Example Code</h2>
+<section id="identify-breast-cancer-concepts-in-snomed-ct" class="level3" data-number="1.5.1">
+<h3 data-number="1.5.1" class="anchored" data-anchor-id="identify-breast-cancer-concepts-in-snomed-ct"><span class="header-section-number">1.5.1</span> 1. Identify Breast Cancer Concepts in SNOMED CT</h3>
+<p>Search for SNOMED CT concepts matching. I am just using the sample SNOMED library here. This is miminal and only includes heart info</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>SNOMED<span class="ot">&lt;-</span> <span class="fu">sampleSNOMED</span>()</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>bc_concepts<span class="ot">&lt;-</span> <span class="fu">SNOMEDconcept</span>(<span class="st">'Heart failure'</span>, <span class="at">SNOMED =</span> SNOMED)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>With the full library I should be able to search for cancer related terms eg</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>bc_concepts <span class="ot">&lt;-</span> <span class="fu">SNOMEDconcept</span>(<span class="st">'breast cancer'</span>, <span class="at">SNOMED=</span>SNOMED)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(bc_concepts)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="create-a-snomed-ct-codelist-including-descendant-concepts" class="level3" data-number="1.5.2">
+<h3 data-number="1.5.2" class="anchored" data-anchor-id="create-a-snomed-ct-codelist-including-descendant-concepts"><span class="header-section-number">1.5.2</span> 2. Create a SNOMED CT Codelist Including Descendant Concepts</h3>
+<p>Include closely related concepts</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>bc_codelist <span class="ot">&lt;-</span> <span class="fu">SNOMEDcodelist</span>(bc_concepts, <span class="at">include_desc=</span><span class="cn">TRUE</span>, <span class="at">SNOMED=</span>SNOMED)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Converting 1 concept(s) to a codelist</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(bc_codelist)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>SNOMED CT codelist: 
+codelist_name: 
+version: 
+author: 
+date: 
+timestamp: 2025-09-17 08:49:46.675115
+sct_version: Sample
+format: simple 
+Key: &lt;conceptId&gt;
+             conceptId                                                     term
+       &lt;SNOMEDconcept&gt;                                                   &lt;char&gt;
+  1:            364006                Acute left-sided heart failure (disorder)
+  2:           5053004       Cardiac insufficiency due to prosthesis (disorder)
+  3:           5148006 Hypertensive heart disease with congestive heart fail...
+  4:           5375005   Chronic left-sided congestive heart failure (disorder)
+  5:          10091002                     High output heart failure (disorder)
+ ---                                                                           
+ 98: 15629541000119106 Congestive heart failure stage C due to ischemic card...
+ 99: 15629591000119103 Congestive heart failure stage B due to ischemic card...
+100: 15629741000119102 Systolic heart failure stage C due to ischemic cardio...
+101: 15964701000119109 Acute cor pulmonale co-occurrent and due to saddle em...
+102: 16838951000119100 Acute on chronic right-sided congestive heart failure...</code></pre>
+</div>
+</div>
+</section>
+<section id="map-breast-cancer-snomed-codes-to-icd-10" class="level3" data-number="1.5.3">
+<h3 data-number="1.5.3" class="anchored" data-anchor-id="map-breast-cancer-snomed-codes-to-icd-10"><span class="header-section-number">1.5.3</span> 3. Map Breast Cancer SNOMED Codes to ICD-10</h3>
+<p>Map the breast cancer SNOMED codes to ICD-10 codes to enable cross-system use</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>bc_icd10_map <span class="ot">&lt;-</span> <span class="fu">getMaps</span>(bc_codelist, <span class="at">to=</span><span class="st">'icd10'</span>, <span class="at">SNOMED=</span>SNOMED)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(bc_icd10_map)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>SNOMED CT codelist: 
+codelist_name: 
+version: 
+author: 
+date: 
+timestamp: 2025-09-17 08:49:46.675115
+sct_version: Sample
+format: simple 
+Key: &lt;conceptId&gt;
+             conceptId                           term icd10_code
+       &lt;SNOMEDconcept&gt;                         &lt;char&gt;     &lt;list&gt;
+  1:            364006 Acute left-sided heart fail...       I501
+  2:           5053004 Cardiac insufficiency due t...       I971
+  3:           5148006 Hypertensive heart disease ...       I110
+  4:           5375005 Chronic left-sided congesti...       I500
+  5:          10091002 High output heart failure (...       I509
+ ---                                                            
+ 98: 15629541000119106 Congestive heart failure st...  I500,I255
+ 99: 15629591000119103 Congestive heart failure st...  I500,I255
+100: 15629741000119102 Systolic heart failure stag...  I509,I255
+101: 15964701000119109 Acute cor pulmonale co-occu...       I260
+102: 16838951000119100 Acute on chronic right-side...       I500</code></pre>
+</div>
+</div>
+</section>
+<section id="extract-unique-icd-10-codes-and-labels" class="level3" data-number="1.5.4">
+<h3 data-number="1.5.4" class="anchored" data-anchor-id="extract-unique-icd-10-codes-and-labels"><span class="header-section-number">1.5.4</span> 4. Extract Unique ICD-10 Codes and Labels</h3>
+<p>Create a summary table of unique ICD-10 codes for breast cancer-related diagnoses</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>bc_icd10_codes <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">code =</span> <span class="fu">unique</span>(bc_icd10_map<span class="sc">$</span>code), <span class="at">term =</span> <span class="fu">unique</span>(bc_icd10_map<span class="sc">$</span>term))</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(bc_icd10_codes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                                                                          term
+                                                                                        &lt;char&gt;
+  1:                                                 Acute left-sided heart failure (disorder)
+  2:                                        Cardiac insufficiency due to prosthesis (disorder)
+  3:                       Hypertensive heart disease with congestive heart failure (disorder)
+  4:                                    Chronic left-sided congestive heart failure (disorder)
+  5:                                                      High output heart failure (disorder)
+ ---                                                                                          
+ 98:                Congestive heart failure stage C due to ischemic cardiomyopathy (disorder)
+ 99:                Congestive heart failure stage B due to ischemic cardiomyopathy (disorder)
+100:                  Systolic heart failure stage C due to ischemic cardiomyopathy (disorder)
+101: Acute cor pulmonale co-occurrent and due to saddle embolus of pulmonary artery (disorder)
+102:                          Acute on chronic right-sided congestive heart failure (disorder)</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="question" class="level2" data-number="1.6">
+<h2 data-number="1.6" class="anchored" data-anchor-id="question"><span class="header-section-number">1.6</span> Question</h2>
+<p>Women who have hormone (estrogen receptor) positive breast cancer often recieve endocrine therapy (tamoxifen or an aromatase inhibitor).</p>
+<ul>
+<li><p><a href="https://evsexplore.semantics.cancer.gov/evsexplore/concept/ncit/C62078">Tamoxifen</a> is a selective estrogen receptor modulator (SERM) that blocks estrogen receptors on cancer cells. It is used primarily in pre-menopausal women and also sometimes in post-menopausal cases.</p></li>
+<li><p>Aromatase inhibitors (e.g., anastrozole, letrozole, exemestane) prevent production of estrogen by blocking the aromatase enzyme; these are mainly used in post-menopausal women.</p></li>
+</ul>
+<!-- -->
+<ul>
+<li>Menopausal status is often approximated using age 55 as a surrogate cutoff in clinical and research settings.</li>
+</ul>
+<p>For this exercise we will try to define a cohort of women with breast cancer who might be eligible for <a href="https://evsexplore.semantics.cancer.gov/evsexplore/concept/ncit/C62078">Tamoxifen</a>. You will develop code to identify the SNOMED-CT that might be useful.</p>
+<ol type="1">
+<li>Find codes for breast cancer</li>
+<li>Find codes for this cohort of hormone positive breast cancer</li>
+</ol>
+<p>Whilst the above provides and example with Rdiagnosislist, may need to explore other R packages for SNOMED-CT eg snomedizer (R interface to the SNOMED CT Terminology Server REST API) or https://github.com/ropensci/trud. (Inferface to NHS TRUD API to programmatically download SNOMED and other NHS reference data directly from the server.)</p>
+</section>
+<section id="deliverables" class="level2" data-number="1.7">
+<h2 data-number="1.7" class="anchored" data-anchor-id="deliverables"><span class="header-section-number">1.7</span> Deliverables</h2>
+<ul>
+<li><p>Submit your completed R script implementing all code steps with comments.</p></li>
+<li><p>Provide the data table containing breast cancer-related ICD-10 codes and descriptions derived from SNOMED CT mappings.</p></li>
+</ul>
+</section>
+<section id="reflection" class="level2" data-number="1.8">
+<h2 data-number="1.8" class="anchored" data-anchor-id="reflection"><span class="header-section-number">1.8</span> Reflection</h2>
+<ul>
+<li><p>Why is precise terminology mapping crucial when defining cancer cohorts?</p></li>
+<li><p>What challenges might arise from incomplete or ambiguous mappings?</p></li>
+</ul>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
