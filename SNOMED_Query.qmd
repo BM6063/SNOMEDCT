@@ -14,9 +14,9 @@ format:
 
 ## Real-World Context
 
-In cancer bioinformatics and clinical research, accurately identifying patients with breast cancer diagnoses and related procedures from electronic health records requires robust use of SNOMED CT coding. This facilitates cohort selection, outcome tracking, and integration of clinical data across coding systems like ICD-10.
-
 In clinical data management and research, accurately coding diagnoses and treatments is vital. SNOMED CT offers precise standardized codes for disease classification and therapeutic interventions.
+
+We will explore identifying codes to find patients with breast cancer diagnoses in electronic health records using SNOMED CT coding.
 
 Women with [hormone receptor (estrogen receptor, ER) positive breast cancer]{.underline} commonly receive endocrine therapy using drugs such as [tamoxifen]{.underline} or [aromatase inhibitors]{.underline} (AIs) as part of their treatment. However these treatments are generally given to different groups of women;
 
