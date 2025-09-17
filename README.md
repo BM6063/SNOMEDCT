@@ -1,3 +1,22 @@
+# Exploring SNOMED CT for Breast Cancer Research in a Real-World Context
+
+In clinical data management and research, accurately coding diagnoses and treatments is vital. SNOMED CT offers precise standardized codes for disease classification and therapeutic interventions.
+
+We will explore identifying codes to find patients with breast cancer diagnoses in electronic health records using  SNOMED CT coding. 
+
+Women with hormone receptor (estrogen receptor, ER) positive breast cancer commonly receive endocrine therapy using drugs such as tamoxifen or aromatase inhibitors (AIs) as part of their treatment. However these treatments are generally given to different groups of women;
+
+- Tamoxifen is a selective estrogen receptor modulator (SERM) primarily used in pre-menopausal women, and occasionally indicated for post-menopausal women; it works by blocking ER on cancer cells, stopping estrogen-driven growth.
+
+- Aromatase inhibitors (AI, e.g., anastrozole, letrozole, exemestane) prevent estrogen production by inhibiting the aromatase enzyme and are mostly used in post-menopausal women.
+
+- Tamoxifen remains the standard adjuvant therapy for pre-menopausal women, while AIs are preferred for post-menopausal women due to better efficacy.
+
+- Menopausal status is often approximated using age 55 as a surrogate marker in clinical and research settings.- 
+
+
+
+
 # Exercise
 Query SNOMED-CT for breast cancer SNOMED-CT codes
 Refine to find codes for hormone positive breast cancer
