@@ -1,0 +1,135 @@
+---
+title: "SNOMED CT Exercise: Breast Cancer Coding with Rdiagnosislist"
+author: "Aedin"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+format: 
+  html: 
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    theme: cosmo
+---
+
+# Exercise: Exploring SNOMED CT for Breast Cancer Research Using Rdiagnosislist
+
+## Real-World Context
+
+In cancer bioinformatics and clinical research, accurately identifying patients with breast cancer diagnoses and related procedures from electronic health records requires robust use of SNOMED CT coding. This facilitates cohort selection, outcome tracking, and integration of clinical data across coding systems like ICD-10.
+
+## Objectives
+
+-   Load SNOMED CT dictionaries for analysis
+-   Search for breast cancer-related clinical concepts
+-   Generate a comprehensive SNOMED CT codelist including subtypes and related clinical findings
+-   Map SNOMED CT breast cancer codes to ICD-10 codes for interoperability
+-   Summarize and inspect the final coding list for use in research cohorts
+
+## Setup
+
+Install and load package
+
+```{r}
+if (!requireNamespace("Rdiagnosislist", quietly = TRUE)) 
+{ 
+  install.packages("Rdiagnosislist") 
+   install.packages("data.table") 
+  } 
+
+library(Rdiagnosislist) 
+library(data.table)
+
+
+```
+
+## Load (sample) SNOMED CT dictionary environment
+
+To query SNOMED, you need a copy of the dictionary
+
+Information about SNOMED CT Irish Edition releases and contact details (snomed@hse.ie) for licensing and downloads
+
+[www.ehealthireland.ie](https://www.ehealthireland.ie/technology-and-transformation-functions/chief-data-and-analytics-office-cdao/standards-and-terminologies/snomed-ct/)
+
+Other [SNOMED-Help](https://static-web.snomedtools.org/html/migrate.html)
+
+[NHS Files](https://isd.digital.nhs.uk/trud/user/guest/group/0/home)
+
+[NHS link -after registering](https://isd.digital.nhs.uk/trud/users/authenticated/filters/0/categories/26/items/101/releases)
+
+You may need to register.
+
+```{r, eval=FALSE}
+# Load UK and International SNOMED CT release files into R
+# Load UK and International SNOMED CT release files into an
+# R environment called 'SNOMED'
+
+SNOMED <- loadSNOMED(c(
+  'SnomedCT_InternationalRF2_PRODUCTION_20200731T120000Z/',
+  'SnomedCT_UKClinicalRF2_PRODUCTION_20210317T000001Z/'))
+
+# Save the 'SNOMED' environment to a file on disk
+saveRDS(SNOMED, file = 'mySNOMED.RDS')
+
+# Reload the 'SNOMED' environment from file
+SNOMED <- readRDS('mySNOMED.RDS')
+```
+## Tasks
+
+### 1. Identify Breast Cancer Concepts in SNOMED CT
+
+Search for SNOMED CT concepts matching.  I am just using the sample SNOMED library here.  This is miminal and only includes heart info
+
+```{r}
+SNOMED<- sampleSNOMED()
+bc_concepts<- SNOMEDconcept('Heart failure', SNOMED = SNOMED)
+```
+
+With the full library I should be able to search for cancer related terms eg
+
+```{r, eval=FALSE}
+bc_concepts <- SNOMEDconcept('breast cancer', SNOMED=SNOMED)
+print(bc_concepts)
+```
+
+### 2. Create a SNOMED CT Codelist Including Descendant Concepts
+
+Include closely related concepts
+
+```{r}
+bc_codelist <- SNOMEDcodelist(bc_concepts, include_desc=TRUE, SNOMED=SNOMED)
+print(bc_codelist)
+```
+
+### 3. Map Breast Cancer SNOMED Codes to ICD-10
+
+Map the breast cancer SNOMED codes to ICD-10 codes to enable cross-system use
+
+
+```{r}
+bc_icd10_map <- getMaps(bc_codelist, to='icd10', SNOMED=SNOMED)
+print(bc_icd10_map)
+```
+
+### 4. Extract Unique ICD-10 Codes and Labels
+
+Create a summary table of unique ICD-10 codes for breast cancer-related diagnoses
+
+```{r}
+bc_icd10_codes <- data.table(code = unique(bc_icd10_map$code), term = unique(bc_icd10_map$term))
+print(bc_icd10_codes)
+```
+
+### 5.  Question
+
+Find codes for ESR1 hormone positve breast cancer  that would be eligible for hormone therapy (eg Tamoxifen or Aromatase Inhibitors). Women are prescribed these if they are pre or post menopause (surragate is age 55). Find codes releated to these queries.
+
+
+Why is precise terminology mapping crucial when defining cancer cohorts?
+
+What challenges might arise from incomplete or ambiguous mappings?
+
+## Deliverables
+
+-   Submit your completed R script implementing all code steps with comments.
+- In addition to Rdiagnosislist,  may need to explore other R packages for SNOMED-CT eg snomedizer (R interface to the SNOMED CT Terminology Server REST API) or https://github.com/ropensci/trud. (Inferface to NHS TRUD API to programmatically download SNOMED and other NHS reference data directly from the server.) or others you find
+
+-   Provide the data table containing breast cancer-related ICD-10 codes and descriptions derived from SNOMED CT mappings.
