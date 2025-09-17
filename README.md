@@ -1,8 +1,17 @@
-This is R code (quatro markdown) to use the R package Rdiagnosislist to query SNOMED-CT.
-The file provides a few example codes. 
-See if you can get this to work to search for breast cancer SNOMED-CT codes
+# Exercise
+Query SNOMED-CT for breast cancer SNOMED-CT codes
+Refine to find codes for hormone positive breast cancer
+
+-   Submit your all code steps with comments.
+-   Provide the data table containing breast cancer-related ICD-10 codes and descriptions derived from SNOMED CT mappings.
 
 
+# R
+Enclosing R code (quatro markdown) using the R package Rdiagnosislist to query SNOMED-CT.  Other R packages that might be useful are snomedizer (R interface to the SNOMED CT Terminology Server REST API) or https://github.com/ropensci/trud. (Inferface to NHS TRUD API to programmatically download SNOMED and other NHS reference data directly ) 
+
+
+
+# Python
 If you do not wish to use, R.  You can develop similar code in python Libraries and resources include
 
 A Python equivalent for working with SNOMED CT similar to the R repository you have (https://github.com/BM6063/SNOMEDCT) can be built using libraries such as PyMedTermino or Pathling:
@@ -16,11 +25,9 @@ Example snippet:
 
 python
 from pymedtermino.snomedct import *
-
-# Load SNOMED CT ontology
 SNOMEDCT.load()
 
-# Get concept by code (e.g., breast cancer)
+
 concept = SNOMEDCT[254837009]
 print(concept)
 print(concept.definition)
