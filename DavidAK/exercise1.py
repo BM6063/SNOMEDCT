@@ -5,7 +5,7 @@ import owlready2 as owl
 import pandas as pd
 from dotenv import load_dotenv
 import argparse
-from SNOMEDCT.DavidAK.database import run_setup
+from database import run_setup
 
 class SnomedIcd10Mapper:
     """
@@ -155,7 +155,13 @@ class SnomedIcd10Mapper:
 # This block ensures the following code only runs when the script is executed directly,
 # not when it's imported as a module into another script.
 if __name__ == '__main__':
+
     # use arg parse for search and refine terms
+    # just incase we want to change them from the command line. Ops
+    # more like  python exercise1.py --search "diabetes" --refine "Type 2"
+    # --search is the primary search term (e.g., "breast cancer")
+    # --refine is the refining term to narrow down results (e.g., "Hormone receptor positive")
+    ##########################################################################################
     parser = argparse.ArgumentParser(description="Map SNOMED CT concepts to ICD-10 codes.")
     parser.add_argument('--search', type=str, required=False, default="breast cancer",
                         help='Primary search term (e.g., "breast cancer").')
@@ -164,6 +170,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
     primary_search = args.search
     refining_search = args.refine
+    ##########################################################################################
+
     # Load environment variables from a .env file in the script's directory.
     # The .env file should contain a line like: DATABASE_NAME="your_database.sqlite3"
     load_dotenv()
