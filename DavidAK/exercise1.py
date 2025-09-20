@@ -101,12 +101,14 @@ class SnomedIcd10Mapper:
         # Find initial concepts based on the primary search term.
         initial_concepts = self._search_snomed_concepts(primary_term)
         if not initial_concepts:
-            print(f"No initial concepts found for '{primary_term}'.")
             return pd.DataFrame()
-        print(f"Found {len(initial_concepts)} initial concept(s).")
 
         # Get all descendants of the initial concepts.
         all_descendants = self._get_all_descendants(initial_concepts)
+
+        # print all the descendants found for debugging
+        print(all_descendants, "<-- all descendants found for primary term")
+        print(f"Total descendants found for '{primary_term}': {len(all_descendants)}")
 
         # Filter these descendants for concepts containing the refining term in their label.
         # we are filtering based on the English label (label.en)
@@ -120,7 +122,6 @@ class SnomedIcd10Mapper:
             # just return an empty dataframe if nothing found.
             return pd.DataFrame()
         
-        print(f"Refined to {len(refined_concepts)} concepts.")
         # Get all descendants of the newly refined list of concepts.
         final_descendants = self._get_all_descendants(refined_concepts)
         # Build a list of records for each SNOMED-to-ICD10 mapping.
@@ -142,7 +143,6 @@ class SnomedIcd10Mapper:
                 })
 
         if not records:
-            print("No ICD-10 mappings were found for the final set of concepts.")
             return pd.DataFrame()
         # Convert the list of dictionary records into a pandas DataFrame.
         
@@ -156,7 +156,9 @@ class SnomedIcd10Mapper:
 # not when it's imported as a module into another script.
 if __name__ == '__main__':
 
-    # use arg parse for search and refine terms
+    # use arg parse for search and refine terms (This is optional, you can hardcode them if preferred)
+    # see variables below like primary_search and refining_search for where to change them.
+    ##########################################################################################
     # just incase we want to change them from the command line. Ops
     # more like  python exercise1.py --search "diabetes" --refine "Type 2"
     # --search is the primary search term (e.g., "breast cancer")
