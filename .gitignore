@@ -1,0 +1,5 @@
+myenv
+.env
+*.sqlite3
+*.zip
+__pycache__/
