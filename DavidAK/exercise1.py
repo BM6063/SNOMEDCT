@@ -115,7 +115,7 @@ class SnomedIcd10Mapper:
 
         refined_concepts = [
             concept for concept in all_descendants
-            if refining_term in str(concept.label.en)
+            if refining_term.lower() in str(concept.label.en).lower()
         ]
 
         if not refined_concepts:
