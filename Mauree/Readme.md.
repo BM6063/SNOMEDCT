@@ -1,0 +1,26 @@
+# SNOMED CT Exercise
+
+This R script provides a simple way to **search SNOMED CT concepts** and their descendants using the SNOMRD international and UK release files.
+
+## Features
+- **Loads SNOMED CT into an R Environment
+- **Searches for concepts** by term ('malignant nroplasm of breast')
+- **Finds all descendants** of a concept using the function 'include_desc = TRUE'
+- **Exports results** to a CSV file 
+
+## Requirements
+- R studio
+- SNOMED CT International files & UK files (from [NHS TRUD](https://isd.digital.nhs.uk/trud)) 
+
+3. **Check the output**:
+    - The script will search for the term `"mslignant neoplasm of breast"` 
+-  Refine term for hormone positive breast cancer
+    - Results are written in the two csv files in this directory
+
+## Output
+
+The CSV file contains:
+
+- **Concept ID**: SNOMED CT concept identifier
+- **Terms**: All active terms/descriptions for the concept
+- Hormone positive SNOMED term mapped to ICD 10 code
